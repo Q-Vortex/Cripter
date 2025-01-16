@@ -23,7 +23,7 @@ public class CameraBoundTilemap : MonoBehaviour
 
         int minX = Mathf.FloorToInt(minScreenPoint.x);
         int maxX = Mathf.CeilToInt(maxScreenPoint.x); 
-        int minY = 1;
+        int minY = Mathf.CeilToInt(minScreenPoint.y);
         int maxY = Mathf.CeilToInt(maxScreenPoint.y);
 
         for (int x = minX; x < maxX; x += 3)
