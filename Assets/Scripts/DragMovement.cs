@@ -29,7 +29,7 @@ public class DragMovement : MonoBehaviour
         {
             startPoint = cam.ScreenToWorldPoint(Input.mousePosition);
             startPoint.z = 15;
-            Debug.Log(startPoint);
+            // Debug.Log(startPoint);
         }
 
         if(Input.GetMouseButtonUp(0))
