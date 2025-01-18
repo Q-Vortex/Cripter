@@ -8,7 +8,7 @@ public class VerticalMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isClinging = false;
     private float defaultGravityScale;
-    //private bool isAtBottom = false; // Проверка на достижение нижней границы
+    private bool isAtBottom = false; // Проверка на достижение нижней границы
 
     void Start()
     {
@@ -21,8 +21,8 @@ public class VerticalMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             isClinging = true;
-            rb.gravityScale = 0; // Отключаем гравитацию при прилипания к стене
-            //isAtBottom = false; // Сброс флага при касании стены
+            rb.gravityScale = 0;
+            isAtBottom = false; 
         }
     }
 
@@ -31,34 +31,29 @@ public class VerticalMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             isClinging = false;
-            rb.gravityScale = defaultGravityScale; // Восстанавливаем гравитацию
-            //isAtBottom = false; // Сброс флага при выходе из столкновения
+            rb.gravityScale = defaultGravityScale;
+            isAtBottom = false; 
         }
     }
 
-    /*
     void Update()
     {
         if (isClinging && !isAtBottom)
         {
-            // Если персонаж цепляется за стену, он автоматически спускается
-            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed); // Спуск вниз с ограниченной скоростью
+            
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
 
-            // Проверка, достиг ли персонаж нижней границы
-            if (transform.position.y <= GetBottomPosition()) // Предполагаем, что это точка нижней границы
+            
+            if (transform.position.y <= GetBottomPosition())
             {
-                isAtBottom = true; // Останавливаем спуск, когда достигли нижней границы
-                rb.velocity = Vector2.zero; // Останавливаем движение
+                isAtBottom = true;
+                rb.velocity = Vector2.zero;
             }
         }
     }
-    */
 
-    // Функция для получения позиции нижней границы стены (можно уточнить по вашему сценарию)
     private float GetBottomPosition()
     {
-        // Здесь мы просто предполагаем, что нижняя граница будет на какой-то фиксированной позиции
-        // Это можно заменить на более сложную логику, если нужна динамическая проверка
-        return -5f; // Например, нижняя граница на Y = -5
+        return -5f;
     }
 }
