@@ -7,10 +7,12 @@ using UnityEngine.Tilemaps;
 public class ChunkManager : MonoBehaviour
 {
     public Camera mainCamera;
+    
     public int chunkWidth = 20;
     public int chunkHeight = 10;
     public float chunkSpacing = 2f;
     public float noiseScale = 0.1f;
+
     public Tilemap tilemap;
     public Tile waterTile; 
     public Tile groundTile;
@@ -43,8 +45,6 @@ public class ChunkManager : MonoBehaviour
         {
             GenerateChunk(nextChunkPosition);
         }
-
-        Debug.Log($"First chunk position: {activeChunks[0].transform.position.x}, Left bound: {leftBound}");
     }
 
     void GenerateChunk(Vector3 position)
@@ -105,6 +105,8 @@ public class ChunkManager : MonoBehaviour
                 }
             }
         }
+
+
     }
 
     void ClearChunkTiles(Vector3 chunkPosition)
