@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,54 +7,97 @@ public class MapGenerator : MonoBehaviour
     public int blockSize;
     public int blockCnt;
     public int yBlockCnt;
-    public float RealBlockSize;
     public Tilemap tmap;
+
     public Tile grass_tile;
     public Tile dirt_tile;
     public Tile water_tile;
+    public Tile grass_corner_tile;
+    public Tile grass_corner_tile_merrored;
+    public Tile corner_tile;
+    public Tile corner_tile_merrored;
 
-    private int chuncSize;
     private float realChuncSize;
     private int chuncCnt = 0;
     void Start()
     {
-        chuncSize = blockCnt * blockSize;
-        realChuncSize = RealBlockSize * blockCnt;
+        realChuncSize = blockSize * blockCnt;
         createChucn();
+        generateFirstChunc();
     }
 
-    void createChucn() {
-        for (int i = 0; i < blockCnt; i++) {
-            if (Random.Range(0, 3) != 1)
+    void generateFirstChunc()
+    {
+        for (int j = 1; j < yBlockCnt; j++)
+        {
+            tmap.SetTile(new Vector3Int(0, -j * blockSize, 0), dirt_tile);
+        }
+        tmap.SetTile(new Vector3Int(0, 0, 0), grass_tile);
+    }
+
+    void createChucn()
+    {
+        for (int i = 0; i < blockCnt; i++)
+        {
+            if (Random.Range(0, 5) != 1)
             {
+                for (int j = 1; j < yBlockCnt; j++)
+                {
+                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), dirt_tile);
+                }
                 tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_tile);
+
             }
             else
             {
                 tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), water_tile);
             }
         }
+
+        for (int i = 0; i < blockCnt; i++)
+        {
+            if (tmap.GetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0)) == grass_tile)
+            {
+                if (tmap.GetTile(new Vector3Int(((i - 1) * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0)) == water_tile)
+                {
+                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_corner_tile);
+                    for (int j = 1; j < yBlockCnt; j++)
+                    {
+                        tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), corner_tile);
+                    }
+                }
+                else if (tmap.GetTile(new Vector3Int(((i + 1) * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0)) == water_tile)
+                {
+                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_corner_tile_merrored);
+                    for (int j = 1; j < yBlockCnt; j++)
+                    {
+                        tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), corner_tile_merrored);
+                    }
+                }
+            }
+        }
         chuncCnt++;
     }
-    
+
     void DeleteChunc()
     {
         for (int i = (int)(mainCamera.transform.position.x - realChuncSize * 2); i < (int)mainCamera.transform.position.x - 12; i++)
         {
-            tmap.SetTile(new Vector3Int(i, 0, 0), null);
+            for (int j = 0; j < yBlockCnt; j++)
+                tmap.SetTile(new Vector3Int(i, -j * blockSize, 0), null);
         }
 
     }
 
     void Update()
     {
-        if (mainCamera.transform.position.x > (chuncSize * chuncCnt) - 12)
+        if (mainCamera.transform.position.x > (realChuncSize * chuncCnt) - 12)
         {
             createChucn();
             DeleteChunc();
         }
 
 
-        Debug.Log($"cam pos = {mainCamera.transform.position.x}, ch & cyi {(chuncSize * chuncCnt) - 12}");
+        // Debug.Log($"cam pos = {mainCamera.transform.position.x}, ch & cyi {(realChuncSize * chuncCnt) - 12}");
     }
 }
