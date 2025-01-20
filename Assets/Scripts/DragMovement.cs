@@ -14,6 +14,9 @@ public class DragMovement : MonoBehaviour
 
     public Vector2 minPower;
     public Vector2 maxPower;
+    public Sprite FallingSprite;
+    public Sprite jumpEffect;
+    public GameObject TextureEffect;
 
     Camera cam;
     Vector2 force;
@@ -21,15 +24,30 @@ public class DragMovement : MonoBehaviour
     Vector3 endPoint;
 
     private Animator animator;
+    private SpriteRenderer spriteRenderer1;
+    private SpriteRenderer spriteRenderer2;
     private float timeOut = 1;
+
     float atemps = 2;
     private void Start()
     {
         cam = Camera.main;
+
         animator = GetComponent<Animator>();
+        spriteRenderer1 = GetComponent<SpriteRenderer>();
+        spriteRenderer2 = TextureEffect.AddComponent<SpriteRenderer>();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision){ atemps = 2f; }
+    private void OnCollisionEnter2D(Collision2D collision){
+        ContactPoint2D contact = collision.contacts[0];  // Используем первую точку контакта
+
+        if (contact.point.y < transform.position.y)
+        {
+            Vector3 position = transform.position;
+            if (TextureEffect != null) TextureEffect.transform.position = position;
+        }
+        atemps = 2f;
+    }
 
     private void Update()
     {
@@ -39,7 +57,6 @@ public class DragMovement : MonoBehaviour
             {
                 startPoint = cam.ScreenToWorldPoint(Input.mousePosition);
                 startPoint.z = 15;
-                // Debug.Log(startPoint);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -50,23 +67,43 @@ public class DragMovement : MonoBehaviour
                 force = new Vector2(Mathf.Clamp(startPoint.x - endPoint.x, minPower.x, maxPower.x), Mathf.Clamp(startPoint.y - endPoint.y, minPower.y, maxPower.y));
                 rb.AddForce(force * power, ForceMode2D.Impulse);
 
-                
-
                 if (atemps == 1)
                 {
                     animator.SetFloat("AttackToMove", 1f);
                     atemps--;
                     StartCoroutine(ResetAttackParameter("AttackToMove", 0.4f));
-                } else
+                }
+                else
                 {
                     animator.SetFloat("jump", 1f);
                     atemps--;
                     StartCoroutine(ResetAttackParameter("jump", 0.4f));
+                    spriteRenderer2.sprite = jumpEffect;
+                    StartCoroutine(delay(0.1f, spriteRenderer2));
                 }
             }
-                
-            
         }
+
+        Vector3 position = transform.position;
+        if (position.y <= -12)
+        {
+            transform.position = new Vector3(0f, 0f, 0f);
+        }
+
+        if (rb.velocity.y < -0.1f)
+        {
+            spriteRenderer1.sprite = FallingSprite;
+            animator.enabled = false;
+        }
+        else
+            animator.enabled = true;
+
+        
+    }
+    IEnumerator delay(float time, SpriteRenderer spriteRender)
+    {
+        yield return new WaitForSeconds(time);
+        spriteRender.sprite = null;
     }
 
     private IEnumerator ResetAttackParameter(string name, float time)

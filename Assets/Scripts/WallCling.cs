@@ -44,16 +44,11 @@ public class VerticalMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
 
             
-            if (transform.position.y <= GetBottomPosition())
+            if (transform.position.y <= -5f)
             {
                 isAtBottom = true;
                 rb.velocity = Vector2.zero;
             }
         }
-    }
-
-    private float GetBottomPosition()
-    {
-        return -5f;
     }
 }
