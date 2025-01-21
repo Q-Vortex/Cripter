@@ -67,6 +67,7 @@ public class DragMovement : MonoBehaviour
                 force = new Vector2(Mathf.Clamp(startPoint.x - endPoint.x, minPower.x, maxPower.x), Mathf.Clamp(startPoint.y - endPoint.y, minPower.y, maxPower.y));
                 rb.AddForce(force * power, ForceMode2D.Impulse);
 
+                //Animation
                 if (atemps == 1)
                 {
                     animator.SetFloat("AttackToMove", 1f);
