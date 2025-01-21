@@ -18,8 +18,6 @@ public class DragMovement : MonoBehaviour
     public Sprite jumpEffect;
     public GameObject TextureEffect;
 
-    public TrajectoryLine tl;
-
     Camera cam;
     Vector2 force;
     Vector3 startPoint;
@@ -36,7 +34,7 @@ public class DragMovement : MonoBehaviour
     {
         cam = Camera.main;
 
-        tl = GetComponent<TrajectoryLine>();
+
         animator = GetComponent<Animator>();
         spriteRenderer1 = GetComponent<SpriteRenderer>();
         spriteRenderer2 = TextureEffect.AddComponent<SpriteRenderer>();
