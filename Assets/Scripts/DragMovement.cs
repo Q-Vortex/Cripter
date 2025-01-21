@@ -35,11 +35,8 @@ public class DragMovement : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
-<<<<<<< Updated upstream
 
-=======
         tl = GetComponent<TrajectoryLine>();
->>>>>>> Stashed changes
         animator = GetComponent<Animator>();
         spriteRenderer1 = GetComponent<SpriteRenderer>();
         spriteRenderer2 = TextureEffect.AddComponent<SpriteRenderer>();

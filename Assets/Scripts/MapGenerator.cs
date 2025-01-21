@@ -130,7 +130,6 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < yBlockCnt; j++)
                 tmap.SetTile(new Vector3Int(i, -j * blockSize, 0), null);
         }
-
     }
 
     void Update()
