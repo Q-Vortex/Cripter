@@ -29,9 +29,11 @@ public class DragMovement : MonoBehaviour
     private float timeOut = 1;
 
     float atemps = 2;
+
     private void Start()
     {
         cam = Camera.main;
+
 
         animator = GetComponent<Animator>();
         spriteRenderer1 = GetComponent<SpriteRenderer>();
@@ -59,6 +61,12 @@ public class DragMovement : MonoBehaviour
                 startPoint.z = 15;
             }
 
+            if (Input.GetMouseButton(0))
+            {
+                Vector3 currentPoint = cam.ScreenToWorldPoint(Input.mousePosition);
+                startPoint.z = 15;
+            }
+
             if (Input.GetMouseButtonUp(0))
             {
                 endPoint = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -67,6 +75,7 @@ public class DragMovement : MonoBehaviour
                 force = new Vector2(Mathf.Clamp(startPoint.x - endPoint.x, minPower.x, maxPower.x), Mathf.Clamp(startPoint.y - endPoint.y, minPower.y, maxPower.y));
                 rb.AddForce(force * power, ForceMode2D.Impulse);
 
+                //Animation
                 if (atemps == 1)
                 {
                     animator.SetFloat("AttackToMove", 1f);
