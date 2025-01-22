@@ -13,50 +13,54 @@ public class MapGenerator : MonoBehaviour
 
     public Tile grass_tile;
     public Tile dirt_tile;
-    public Tile water_tile;
     public Tile grass_corner_tile;
-    public Tile grass_corner_tile_merrored;
-    public Tile grass_column_tile;
     public Tile corner_tile;
+    public Tile grass_corner_tile_merrored;
     public Tile corner_tile_merrored;
+    public Tile grass_column_tile;
     public Tile column_tile;
-    
+    public Tile water_tile;
+
     private float realChuncSize;
     private int chuncCnt = 0;
     private int verticalPosition = 0;
     void Start()
     {
         realChuncSize = blockSize * blockCnt;
-        //createHorisontalChunc();
-        createVerticalChucn();
+        createHorisontalChunc();
+        //createVerticalChunc();
         generateFirstChunc();
     }
 
     void generateFirstChunc()
     {
-        for (int j = 1; j < yBlockCnt; j++)
+        for (int i = -6; i < 0; i++)
         {
-            tmap.SetTile(new Vector3Int(0, -j * blockSize, 0), dirt_tile);
+            for (int j = 1; j < yBlockCnt; j++)
+            {
+                tmap.SetTile(new Vector3Int(i * blockSize, -j * blockSize, 0), dirt_tile);
+            }
+            tmap.SetTile(new Vector3Int(i * blockSize, 0, 0), grass_tile);
         }
-        tmap.SetTile(new Vector3Int(0, 0, 0), grass_tile);
+       
     }
 
-    void createVerticalChucn()
+    void createHorisontalChunc()
     {
-        for (int i = 1; i < blockCnt; i++)
+        for (int i = 0; i < blockCnt; i++)
         {
             if (Random.Range(0, 5) != 1)
             {
                 for (int j = 1; j < yBlockCnt; j++)
                 {
-                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), dirt_tile);
+                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), (-j + verticalPosition) * blockSize, 0), dirt_tile);
                 }
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_tile);
+                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), verticalPosition * blockSize, 0), grass_tile);
 
             }
             else
             {
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), water_tile);
+                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), verticalPosition * blockSize , 0), water_tile);
             }
         }
 
@@ -85,7 +89,7 @@ public class MapGenerator : MonoBehaviour
         chuncCnt++;
     }
     
-    void createHorisontalChunc()
+    void createVerticalChunc()
     {
         int x;
         x = chuncCnt * (int)realChuncSize;
@@ -94,7 +98,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                tmap.SetTile(new Vector3Int(x, i * blockSize * 6 + j * blockSize, 0), dirt_tile);
+                tmap.SetTile(new Vector3Int(x + 3, i * blockSize * 6 + j * blockSize, 0), dirt_tile);
             }
 
             if (Random.Range(0, 2) == 1)
@@ -139,14 +143,13 @@ public class MapGenerator : MonoBehaviour
         {
             if (Random.Range(0, 4) == 1)
             {  
-                createVerticalChucn();
+                createVerticalChunc();
             } else
             {
                 createHorisontalChunc();
             }
             DeleteChunc();
         }
-
 
         // Debug.Log($"cam pos = {mainCamera.transform.position.x}, ch & cyi {(realChuncSize * chuncCnt) - 12}");
     }
