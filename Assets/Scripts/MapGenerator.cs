@@ -27,7 +27,8 @@ public class MapGenerator : MonoBehaviour
     void Start()
     {
         realChuncSize = blockSize * blockCnt;
-        createHorisontalChunc();
+        //createHorisontalChunc();
+        createVerticalChucn();
         generateFirstChunc();
     }
 
@@ -48,14 +49,14 @@ public class MapGenerator : MonoBehaviour
             {
                 for (int j = 1; j < yBlockCnt; j++)
                 {
-                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), verticalPosition, 0), dirt_tile);
+                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), dirt_tile);
                 }
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), verticalPosition, 0), grass_tile);
+                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_tile);
 
             }
             else
             {
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), verticalPosition, 0), water_tile);
+                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), water_tile);
             }
         }
 
