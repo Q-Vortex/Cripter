@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VerticalMovement : MonoBehaviour
+public class VerticalMoovement : MonoBehaviour
 {
-    public float slideSpeed = 2f; // Скорость спуска по стене
+    public float slideSpeed = 0.5f; // Скорость спуска по стене
+    //public float wallCheckDistance = 0.1f; // Расстояние для проверки стены
     private Rigidbody2D rb;
     private bool isClinging = false;
     private float defaultGravityScale;
-    private bool isAtBottom = false; // Проверка на достижение нижней границы
+    private int CollisiomCNT = 0;
 
     void Start()
     {
@@ -16,13 +17,15 @@ public class VerticalMovement : MonoBehaviour
         defaultGravityScale = rb.gravityScale;
     }
 
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
             isClinging = true;
-            rb.gravityScale = 0;
-            isAtBottom = false; 
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
+            rb.gravityScale = 0.1f; // Отключаем гравитацию
+            CollisiomCNT++;
         }
     }
 
@@ -30,25 +33,23 @@ public class VerticalMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            isClinging = false;
-            rb.gravityScale = defaultGravityScale;
-            isAtBottom = false; 
+            CollisiomCNT--;
+
+            if (CollisiomCNT == 0)
+            {
+                isClinging = false;
+                rb.gravityScale = defaultGravityScale; // Восстанавливаем гравитацию
+            }
         }
     }
 
+
+    // Update is called once per frame
     void Update()
     {
-        if (isClinging && !isAtBottom)
+        if (isClinging && rb.velocity.y < -slideSpeed)
         {
-            
-            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-
-            
-            if (transform.position.y <= -5f)
-            {
-                isAtBottom = true;
-                rb.velocity = Vector2.zero;
-            }
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed); // Ограничиваем скорость спуска
         }
     }
 }
