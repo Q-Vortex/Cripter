@@ -18,6 +18,8 @@ public class DragMovement : MonoBehaviour
     public Sprite jumpEffect;
     public GameObject TextureEffect;
 
+    public TrajectoryLine tl;
+
     Camera cam;
     Vector2 force;
     Vector3 startPoint;
@@ -33,7 +35,7 @@ public class DragMovement : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
-
+        tl = GetComponent<TrajectoryLine>();
 
         animator = GetComponent<Animator>();
         spriteRenderer1 = GetComponent<SpriteRenderer>();
@@ -65,6 +67,8 @@ public class DragMovement : MonoBehaviour
             {
                 Vector3 currentPoint = cam.ScreenToWorldPoint(Input.mousePosition);
                 startPoint.z = 15;
+
+                tl.RenderLine(startPoint, currentPoint);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -74,6 +78,7 @@ public class DragMovement : MonoBehaviour
 
                 force = new Vector2(Mathf.Clamp(startPoint.x - endPoint.x, minPower.x, maxPower.x), Mathf.Clamp(startPoint.y - endPoint.y, minPower.y, maxPower.y));
                 rb.AddForce(force * power, ForceMode2D.Impulse);
+                tl.EndLine();
 
                 //Animation
                 if (atemps == 1)
@@ -122,5 +127,11 @@ public class DragMovement : MonoBehaviour
         animator.SetFloat(name, 0f);
         timeOut = 1;
     }
-    
+
+
+
 }
+
+
+
+
