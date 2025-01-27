@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DragMovement : MonoBehaviour
@@ -96,7 +97,7 @@ public class DragMovement : MonoBehaviour
         Vector3 position = transform.position;
         if (position.y <= -12)
         {
-            transform.position = new Vector3(0f, 0f, 0f);
+            SceneManager.LoadSceneAsync(0);
         }
 
         if (rb.velocity.y < -0.1f)

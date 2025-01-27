@@ -49,7 +49,7 @@ public class MapGenerator : MonoBehaviour
                                 else if (NextPos.y > FarestBlock.y)
                                 {
                                     FarestBlock = NextPos;
-                                    Debug.Log(NextPos.y);
+                                    //Debug.Log(NextPos.y);
                                 }
                             }
                             tilemap.SetTile(NextPos, ruleTile);
@@ -78,20 +78,29 @@ public class MapGenerator : MonoBehaviour
                         {
                             tilemap.SetTile(NowPos, ruleTile);
                         }
+                        if (tilemap.GetTile(LeftPos) != null && tilemap.GetTile(RightPos) != null && tilemap.GetTile(TopPos) != null ||
+                            tilemap.GetTile(LeftPos) != null && tilemap.GetTile(RightPos) != null && tilemap.GetTile(BottomPos) != null)
+                        {
+                            tilemap.SetTile(NowPos, ruleTile);
+                        }
 
                     }
                     else if (tilemap.GetTile(NowPos) != null)
                     {
-                        if (tilemap.GetTile(LeftPos) == null && tilemap.GetTile(RightPos) == null &&
+                        if (tilemap.GetTile(LeftPos) == null && tilemap.GetTile(RightPos) == null && tilemap.GetTile(TopPos) == null)
+                        { 
+                            tilemap.SetTile(NowPos, null); 
+                        }
+                        else if (tilemap.GetTile(LeftPos) == null && tilemap.GetTile(RightPos) == null &&
                             tilemap.GetTile(TopPos) == null && tilemap.GetTile(BottomPos) == null)
                         {
                             tilemap.SetTile(NowPos, null);
-                        }
+                        } 
                     }
                 }
             }
         } 
-        else if (GeneratorSettings == Settings.Realistic)
+        else if (GeneratorSettings == Settings.Livitation)
         {
             for (int y = FarestBlock.y; y >= -10; y--)
             {
@@ -128,8 +137,6 @@ public class MapGenerator : MonoBehaviour
     }
     void Update()
     {
-        //Debug.Log($"DEl={(int)(mainCamera.transform.position.x / gridChellSize - 20)}, ADD={NearestBlock.x * gridChellSize - 10}");
-
         if (mainCamera.transform.position.x > NearestBlock.x * gridChellSize - 50)
         {
             GenerateChunc();

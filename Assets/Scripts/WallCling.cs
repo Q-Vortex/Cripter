@@ -24,7 +24,7 @@ public class VerticalMoovement : MonoBehaviour
         {
             isClinging = true;
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-            rb.gravityScale = 0.1f; // Отключаем гравитацию
+            rb.gravityScale = 0.1f;
             CollisiomCNT++;
         }
     }
@@ -38,18 +38,15 @@ public class VerticalMoovement : MonoBehaviour
             if (CollisiomCNT == 0)
             {
                 isClinging = false;
-                rb.gravityScale = defaultGravityScale; // Восстанавливаем гравитацию
+                rb.gravityScale = defaultGravityScale;
             }
         }
     }
-
-
-    // Update is called once per frame
     void Update()
     {
         if (isClinging && rb.velocity.y < -slideSpeed)
         {
-            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed); // Ограничиваем скорость спуска
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
         }
     }
 }
