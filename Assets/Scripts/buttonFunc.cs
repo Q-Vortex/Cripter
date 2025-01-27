@@ -25,7 +25,7 @@ public class buttonFunc : MonoBehaviour
         {
             if (canvasObject.activeSelf)
             {
-                canvasObject.SetActive(false); // Скрыть Canvas
+                canvasObject.SetActive(false);
             }
             else
             {
