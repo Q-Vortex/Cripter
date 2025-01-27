@@ -1,153 +1,139 @@
-using JetBrains.Annotations;
-using Unity.VisualScripting;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class MapGenerator : MonoBehaviour
 {
+    public int chunkSizeX, chunkSizeY;
+    public int gridChellSize;
+    public RuleTile ruleTile;
+    public Tilemap tilemap;
     public Camera mainCamera;
-    public int blockSize;
-    public int blockCnt;
-    public int yBlockCnt;
-    public Tilemap tmap;
-
-    public Tile grass_tile;
-    public Tile dirt_tile;
-    public Tile water_tile;
-    public Tile grass_corner_tile;
-    public Tile grass_corner_tile_merrored;
-    public Tile grass_column_tile;
-    public Tile corner_tile;
-    public Tile corner_tile_merrored;
-    public Tile column_tile;
-    
-    private float realChuncSize;
-    private int chuncCnt = 0;
-    private int verticalPosition = 0;
+    public enum Settings {None, Livitation, Realistic};
+    public Settings GeneratorSettings;
+    private int ChuncCnt = 1;
+    private Vector3Int NearestBlock = new Vector3Int(0, 0, 0);
+    private Vector3Int FarestBlock = new Vector3Int(0, 0, 0);
     void Start()
     {
-        realChuncSize = blockSize * blockCnt;
-        //createHorisontalChunc();
-        createVerticalChucn();
-        generateFirstChunc();
+        GenerateChunc();
     }
 
-    void generateFirstChunc()
+    void GenerateChunc()
     {
-        for (int j = 1; j < yBlockCnt; j++)
-        {
-            tmap.SetTile(new Vector3Int(0, -j * blockSize, 0), dirt_tile);
-        }
-        tmap.SetTile(new Vector3Int(0, 0, 0), grass_tile);
-    }
+        List<Vector3Int> BlockPosition = new List<Vector3Int>();
 
-    void createVerticalChucn()
-    {
-        for (int i = 1; i < blockCnt; i++)
+        Vector3Int StartPos = new Vector3Int((chunkSizeX * ChuncCnt) / 2, chunkSizeY / 2, 0);
+        tilemap.SetTile(StartPos, ruleTile);
+        BlockPosition.Add(StartPos);
+
+        for (int t = 0; t < 5; t++)
         {
-            if (Random.Range(0, 5) != 1)
+            for (int i = 0; i < BlockPosition.Count; i++)
             {
-                for (int j = 1; j < yBlockCnt; j++)
+                for (int x = -1; x <= 1; x++)
                 {
-                    tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), -j * blockSize, 0), dirt_tile);
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        if (Random.Range(0, 4) != 1)
+                        {
+                            Vector3Int NextPos = new Vector3Int(BlockPosition[i].x + x, BlockPosition[i].y + y, 0);
+                            if (tilemap.GetTile(NextPos) == null)
+                            {
+                                if (NextPos.x > NearestBlock.x)
+                                {
+                                    NearestBlock = NextPos;
+                                }
+                                else if (NextPos.y > FarestBlock.y)
+                                {
+                                    FarestBlock = NextPos;
+                                    Debug.Log(NextPos.y);
+                                }
+                            }
+                            tilemap.SetTile(NextPos, ruleTile);
+                            BlockPosition.Add(NextPos);
+                            BlockPosition.Remove(BlockPosition[i]);
+                        }
+                    }
                 }
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), grass_tile);
-
-            }
-            else
-            {
-                tmap.SetTile(new Vector3Int((i * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0), water_tile);
             }
         }
-
-        for (int i = 0; i < blockCnt; i++)
+        if (GeneratorSettings == Settings.Realistic)
         {
-            Vector3Int currentTilePosition = GetTilePosition(i);
-            Vector3Int previousTilePosition = GetTilePosition(i - 1);
-            Vector3Int nextTilePosition = GetTilePosition(i + 1);
-
-            if (tmap.GetTile(currentTilePosition) == grass_tile)
+            for (int y = FarestBlock.y; y >= -10; y--)
             {
-                if (tmap.GetTile(previousTilePosition) == water_tile)
+                for (int x = NearestBlock.x; x >= 0; x--)
                 {
-                    SetCornerTiles(currentTilePosition, grass_corner_tile, corner_tile);
+                    Vector3Int NowPos = new Vector3Int(x, y, 0);
+                    Vector3Int TopPos = new Vector3Int(x, y + 1, 0);
+                    Vector3Int BottomPos = new Vector3Int(x, y - 1, 0);
+                    Vector3Int LeftPos = new Vector3Int(x - 1, y, 0);
+                    Vector3Int RightPos = new Vector3Int(x + 1, y, 0);
+
+                    if (tilemap.GetTile(NowPos) == null)
+                    {
+                        if (tilemap.GetTile(TopPos) != null && tilemap.GetTile(BottomPos) != null)
+                        {
+                            tilemap.SetTile(NowPos, ruleTile);
+                        }
+
+                    }
+                    else if (tilemap.GetTile(NowPos) != null)
+                    {
+                        if (tilemap.GetTile(LeftPos) == null && tilemap.GetTile(RightPos) == null &&
+                            tilemap.GetTile(TopPos) == null && tilemap.GetTile(BottomPos) == null)
+                        {
+                            tilemap.SetTile(NowPos, null);
+                        }
+                    }
                 }
-                else if (tmap.GetTile(nextTilePosition) == water_tile)
+            }
+        } 
+        else if (GeneratorSettings == Settings.Realistic)
+        {
+            for (int y = FarestBlock.y; y >= -10; y--)
+            {
+                for (int x = NearestBlock.x; x >= 0; x--)
                 {
-                    SetCornerTiles(currentTilePosition, grass_corner_tile_merrored, corner_tile_merrored);
+                    Vector3Int NowPos = new Vector3Int(x, y, 0);
+                    Vector3Int TopPos = new Vector3Int(x, y + 1, 0);
+                    Vector3Int BottomPos = new Vector3Int(x, y - 1, 0);
+                    Vector3Int LeftPos = new Vector3Int(x - 1, y, 0);
+                    Vector3Int RightPos = new Vector3Int(x + 1, y, 0);
+
+                    if (tilemap.GetTile(NowPos) == null)
+                    {
+                        if (tilemap.GetTile(TopPos) != null && tilemap.GetTile(BottomPos) != null)
+                        {
+                            tilemap.SetTile(NowPos, ruleTile);
+                        }
+                    }
                 }
-                if (tmap.GetTile(previousTilePosition) == water_tile 
-                    && tmap.GetTile(nextTilePosition) == water_tile) {
-                    SetCornerTiles(currentTilePosition, grass_column_tile, column_tile);
-                }
             }
         }
-        chuncCnt++;
+        ChuncCnt++;
     }
-    
-    void createHorisontalChunc()
+    void DestroyChunc()
     {
-        int x;
-        x = chuncCnt * (int)realChuncSize;
-        
-        for (int i = 0; i < 10; i++)
+        for (int x = 0; x < (int)(mainCamera.transform.position.x / gridChellSize - 20); x++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int y = -10; y < chunkSizeY; y++)
             {
-                tmap.SetTile(new Vector3Int(x, i * blockSize * 6 + j * blockSize, 0), dirt_tile);
+                tilemap.SetTile(new Vector3Int(x, -y, 0), null);
             }
-
-            if (Random.Range(0, 2) == 1)
-            {
-                x += Random.Range(2, 10);
-            }
-            else
-            {
-                x -= Random.Range(2, 10);
-            }
-            verticalPosition++;
-        }
-        chuncCnt++;
-    }
-
-    Vector3Int GetTilePosition(int index)
-    {
-        return new Vector3Int((index * blockSize) + (int)(realChuncSize * chuncCnt), 0, 0);
-    }
-    void SetCornerTiles(Vector3Int basePosition, TileBase topTile, TileBase sideTile)
-    {
-        tmap.SetTile(basePosition, topTile);
-        for (int j = 1; j < yBlockCnt; j++)
-        {
-            Vector3Int sideTilePosition = new Vector3Int(basePosition.x, basePosition.y - j * blockSize, basePosition.z);
-            tmap.SetTile(sideTilePosition, sideTile);
+            
         }
     }
-
-    void DeleteChunc()
-    {
-        for (int i = (int)(mainCamera.transform.position.x - realChuncSize * 2); i < (int)mainCamera.transform.position.x - 12; i++)
-        {
-            for (int j = 0; j < yBlockCnt; j++)
-                tmap.SetTile(new Vector3Int(i, -j * blockSize, 0), null);
-        }
-    }
-
     void Update()
     {
-        if (mainCamera.transform.position.x > (realChuncSize * chuncCnt) - 12)
+        //Debug.Log($"DEl={(int)(mainCamera.transform.position.x / gridChellSize - 20)}, ADD={NearestBlock.x * gridChellSize - 10}");
+
+        if (mainCamera.transform.position.x > NearestBlock.x * gridChellSize - 50)
         {
-            if (Random.Range(0, 4) == 1)
-            {  
-                createVerticalChucn();
-            } else
-            {
-                createHorisontalChunc();
-            }
-            DeleteChunc();
+            GenerateChunc();
+            DestroyChunc();
         }
-
-
-        // Debug.Log($"cam pos = {mainCamera.transform.position.x}, ch & cyi {(realChuncSize * chuncCnt) - 12}");
     }
 }
