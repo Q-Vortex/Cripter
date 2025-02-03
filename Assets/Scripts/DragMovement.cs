@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class DragMovement : MonoBehaviour
 {
@@ -17,18 +13,15 @@ public class DragMovement : MonoBehaviour
     public Vector2 maxPower;
     public Sprite FallingSprite;
     public Sprite jumpEffect;
-    public GameObject TextureEffect;
-
     public TrajectoryLine tl;
 
-    Camera cam;
-    Vector2 force;
-    Vector3 startPoint;
-    Vector3 endPoint;
+    private Camera cam;
+    private Vector2 force;
+    private Vector3 startPoint;
+    private Vector3 endPoint;
 
     private Animator animator;
     private SpriteRenderer spriteRenderer1;
-    private SpriteRenderer spriteRenderer2;
     private float timeOut = 1;
 
     float atemps = 2;
@@ -40,17 +33,10 @@ public class DragMovement : MonoBehaviour
 
         animator = GetComponent<Animator>();
         spriteRenderer1 = GetComponent<SpriteRenderer>();
-        spriteRenderer2 = TextureEffect.AddComponent<SpriteRenderer>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
-        ContactPoint2D contact = collision.contacts[0];  // ���������� ������ ����� ��������
-
-        if (contact.point.y < transform.position.y)
-        {
-            Vector3 position = transform.position;
-            if (TextureEffect != null) TextureEffect.transform.position = position;
-        }
+        
         atemps = 2f;
     }
 
@@ -93,14 +79,13 @@ public class DragMovement : MonoBehaviour
                     animator.SetFloat("jump", 1f);
                     atemps--;
                     StartCoroutine(ResetAttackParameter("jump", 0.4f));
-                    spriteRenderer2.sprite = jumpEffect;
-                    StartCoroutine(delay(0.1f, spriteRenderer2));
+
                 }
             }
         }
 
         Vector3 position = transform.position;
-        if (position.y <= -12)
+        if (position.y <= 5)
         {
             SceneManager.LoadSceneAsync(0);
         }
@@ -112,13 +97,6 @@ public class DragMovement : MonoBehaviour
         }
         else
             animator.enabled = true;
-
-        
-    }
-    IEnumerator delay(float time, SpriteRenderer spriteRender)
-    {
-        yield return new WaitForSeconds(time);
-        spriteRender.sprite = null;
     }
 
     private IEnumerator ResetAttackParameter(string name, float time)
@@ -128,7 +106,4 @@ public class DragMovement : MonoBehaviour
         animator.SetFloat(name, 0f);
         timeOut = 1;
     }
-
-
-
 }

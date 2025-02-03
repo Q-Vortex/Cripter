@@ -8,7 +8,6 @@ public class FolowScript : MonoBehaviour
 {
     public Camera MainCamera;
     private Collider2D collider;
-    //public float SmoothSpeed = 5f;
     void Start()
     {
         collider = GetComponent<Collider2D>();
