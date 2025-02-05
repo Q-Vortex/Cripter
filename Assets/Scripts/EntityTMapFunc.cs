@@ -25,7 +25,6 @@ public class EntityTMapFunc : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Vector3Int cellPosition = tilemap.WorldToCell(other.transform.position);
-            if (tilemap.GetTile()
             tilemap.SetTile(cellPosition, null);
         }
     }
