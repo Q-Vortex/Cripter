@@ -46,3 +46,6 @@ TagManager:
   - name: Block
     uniqueID: 2967378489
     locked: 0
+  - name: Water
+    uniqueID: 2045048471
+    locked: 0

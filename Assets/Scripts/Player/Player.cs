@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DragMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public float power = 10f;
     public Rigidbody2D rb;
@@ -24,7 +24,7 @@ public class DragMovement : MonoBehaviour
     private SpriteRenderer spriteRenderer1;
     private float timeOut = 1;
 
-    float atemps = 2;
+    public float atemps = 2;
 
     private void Start()
     {
@@ -35,11 +35,7 @@ public class DragMovement : MonoBehaviour
         spriteRenderer1 = GetComponent<SpriteRenderer>();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision){
-        
-        atemps = 2f;
-    }
-
+    private void OnCollisionEnter2D(Collision2D collision) { atemps = 2f; }
     private void Update()
     {
         if (timeOut != 0 && atemps != 0)
