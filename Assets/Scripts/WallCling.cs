@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class VerticalMoovement : MonoBehaviour
 {
-    public float slideSpeed = 0.5f; // Скорость спуска по стене
-    //public float wallCheckDistance = 0.1f; // Расстояние для проверки стены
+    public float slideSpeed = 0.5f;
     private Rigidbody2D rb;
     private bool isClinging = false;
     private float defaultGravityScale;
