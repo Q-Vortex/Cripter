@@ -131,10 +131,11 @@ public class MapGenerator : MonoBehaviour
     {
         foreach (var pos in islandBlocks)
         {
+            Vector3Int nowPos = new Vector3Int(pos.x, pos.y, pos.z);
             Vector3Int TopPos = new Vector3Int(pos.x, pos.y + 1, pos.z);
-            Vector3Int BottomPos = new Vector3Int(pos.x, pos.y - 1, pos.z);
-
-            if (BlockTilemap.GetTile(TopPos) == null && BlockTilemap.GetTile(BottomPos) != null)
+            Vector3Int BottomLeftPos = new Vector3Int(pos.x + 1, pos.y + 1, pos.z);
+            Vector3Int BottomRightPos = new Vector3Int(pos.x - 1, pos.y + 1, pos.z);
+            if (BlockTilemap.GetTile(TopPos) == null && BlockTilemap.GetTile(BottomLeftPos) == null && BlockTilemap.GetTile(BottomRightPos) == null)
             {
                 if (Random.Range(0, 8) != 1 && Random.Range(0, 8) >= 4)
                 {
