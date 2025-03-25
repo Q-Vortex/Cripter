@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SeashellBall : MonoBehaviour
+public class CannonBall : MonoBehaviour
 {
     public float maxDistance = 15f;   // Максимальная дистанция полета
     public LayerMask blockLayer;      // Слой блоков

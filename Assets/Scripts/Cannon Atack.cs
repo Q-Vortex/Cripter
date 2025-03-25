@@ -1,20 +1,21 @@
+
 using System.Collections;
 using UnityEngine;
 
-public class SeashellCannon : MonoBehaviour
+public class Cannon : MonoBehaviour
 {
-    public GameObject SeashellBallPrefab; // Префаб ядра
+    public GameObject cannonBallPrefab; // Префаб ядра
     public Transform firePoint; // Точка выстрела
 
-    public void Shoot() // Этот метод вызовем из анимации
+    public void CannonShoot() // Этот метод вызовем из анимации
     {
-        if (SeashellBallPrefab == null)
+        if (cannonBallPrefab == null)
         {
             Debug.LogError("Ошибка: префаб ядра не назначен!");
             return;
         }
         Debug.Log("Выстрел!"); // Проверяем, вызывается ли метод
-        GameObject cannonBall = Instantiate(SeashellBallPrefab, firePoint.position, firePoint.rotation);
+        GameObject cannonBall = Instantiate(cannonBallPrefab, firePoint.position, firePoint.rotation);
         Rigidbody2D rb = cannonBall.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
