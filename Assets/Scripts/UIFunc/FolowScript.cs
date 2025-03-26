@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
-using Unity.Collections;
 using UnityEngine;
 
 public class FolowScript : MonoBehaviour
