@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "718246348172",
+    "project_id": "cripter-9cde8",
+    "storage_bucket": "cripter-9cde8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718246348172:android:ab69bc1ab5e54412aac2a9",
+        "android_client_info": {
+          "package_name": "com.tri.cripter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjZUbgBCE0xsjQJtds1LkIm4-HY1zBuRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
